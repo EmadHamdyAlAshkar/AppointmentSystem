@@ -1,8 +1,15 @@
-﻿using AppointmentSystem.Service.DoctorServices;
+﻿using AppointmentSystem.Domain.Contexts;
+using AppointmentSystem.Service.DoctorServices;
 using AppointmentSystem.Service.DoctorServices.Dtos;
 using AppointmentSystem.Service.PaitentServices.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using System;
+using AppointmentSystem.Service.AvailabilityServices.Dtos;
+using AutoMapper;
 
 namespace AppointmentSystem.Web.Controllers
 {
@@ -11,10 +18,16 @@ namespace AppointmentSystem.Web.Controllers
     public class DoctorController : ControllerBase
     {
         private readonly IDoctorService _doctorService;
+        private readonly AppointmentSystemDbContext _context;
+        private readonly IMapper _mapper;
 
-        public DoctorController(IDoctorService doctorService)
+        public DoctorController(IDoctorService doctorService,
+                                AppointmentSystemDbContext context,
+                                IMapper mapper)
         {
             _doctorService = doctorService;
+            _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -51,6 +64,46 @@ namespace AppointmentSystem.Web.Controllers
         {
             await _doctorService.DeleteAsync(id);
             return Ok(new { Message = $"Doctor With Id ({id}) Deleted Successfully" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDoctorSchedule(int id, string? specialization, double? minRating, string? dayOfWeek)
+        {
+            #region With Manual Mapping
+            //var doctor = await _context.Doctors.FindAsync(id);
+
+            //var doctorAvailabilities = await _context.DoctorAvailabilities.Where(x => x.DoctorId == id)
+            //                                                              .Select(x => new DoctorAvailabilityDto
+            //                                                              {
+            //                                                                  DoctorId = x.DoctorId,
+            //                                                                  DayOfWeek = x.DayOfWeek,
+            //                                                                  StartTime = x.StartTime,
+            //                                                                  EndTime = x.EndTime,
+            //                                                                  ExaminationDuration = x.ExaminationDuration,
+            //                                                              })
+            //                                                              .ToListAsync();
+
+            //var doctorSchedule = new DoctorDetailsDto
+            //{
+            //    Id = doctor.Id,
+            //    Name = doctor.Name,
+            //    Specialization = doctor.Specialization,
+            //    Rating = doctor.Rating,
+            //    Availabilities = doctorAvailabilities
+            //};
+
+            //return Ok(doctorSchedule);
+            #endregion
+
+            #region With AutoMapper
+
+            var doctor = await _context.Doctors.Include(d => d.Availabilities).FirstOrDefaultAsync(d => d.Id == id);
+
+            var mappedDoctor = _mapper.Map<DoctorDetailsDto>(doctor);
+
+            return Ok(mappedDoctor);
+
+            #endregion
         }
     }
 }

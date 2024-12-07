@@ -8,6 +8,9 @@ using AppointmentSystem.Service.PaitentServices;
 using AppointmentSystem.Service.PaitentServices.Dtos;
 using Microsoft.EntityFrameworkCore;
 
+
+
+
 namespace AppointmentSystem.Web
 {
     public class Program
@@ -22,6 +25,7 @@ namespace AppointmentSystem.Web
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
 
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
             builder.Services.AddScoped<IPatientService, PatientService>();

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AppointmentSystem.Domain.Entities;
+using AppointmentSystem.Service.AvailabilityServices.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +14,6 @@ namespace AppointmentSystem.Service.DoctorServices.Dtos
         public string Name { get; set; }
         public string Specialization { get; set; }
         public double Rating { get; set; }
+        public List<DoctorAvailabilityDto> Availabilities { get; set; }
     }
 }
