@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Mohamed Ali",
+    "Specialization": "Surgery",
+    "Rating": 4.9
+  },
+  {
+    "Name": "Tarek Mostafa",
+    "Specialization": "Dentist",
+    "Rating": 4.8
+  },
+  {
+    "Name": "Amr Ibrahem",
+    "Specialization": "Bones",
+    "Rating": 4.7
+  }
+]

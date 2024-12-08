@@ -13,6 +13,7 @@ namespace AppointmentSystem.Domain.Entities
         public string Specialization { get; set; }
         public double Rating { get; set; }
         public List<DoctorAvailability> Availabilities { get; set; }
+        
 
     }
 }

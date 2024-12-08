@@ -74,7 +74,7 @@ namespace AppointmentSystem.Web.Controllers
                                          && ap.AppointmentDate == appointmentDto.AppointmentDate
                                          && ap.ExaminationStartTime == appointmentDto.ExaminationStartTime);
 
-                if (existingAppiontment.PatientId == appointmentDto.PatientId)
+                if (existingAppiontment != null && existingAppiontment.PatientId == appointmentDto.PatientId)
                 {
                     return BadRequest("You have already booked this examination time !!!");
                 }
