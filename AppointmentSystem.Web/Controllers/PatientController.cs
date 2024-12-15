@@ -1,7 +1,9 @@
-﻿using AppointmentSystem.Service.PaitentServices;
+﻿using AppointmentSystem.Domain.Contexts;
+using AppointmentSystem.Service.PaitentServices;
 using AppointmentSystem.Service.PaitentServices.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentSystem.Web.Controllers
 {
@@ -10,10 +12,13 @@ namespace AppointmentSystem.Web.Controllers
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
+        private readonly AppointmentSystemDbContext _context;
 
-        public PatientController(IPatientService patientService)
+        public PatientController(IPatientService patientService,
+                                 AppointmentSystemDbContext context)
         {
             _patientService = patientService;
+            _context = context;
         }
 
         [HttpGet]
@@ -50,6 +55,22 @@ namespace AppointmentSystem.Web.Controllers
         {
             await _patientService.DeleteAsync(id);
             return Ok(new { Message = $"Patient With Id ({id}) Deleted Successfully" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPatientAppointments(int patientId)
+        {
+            var patient = await _context.Patients.FindAsync(patientId);
+
+            if(patient == null)
+            {
+                return NotFound("Patient not found !!!");
+            }
+
+            var patientAppointments = await _context.Appointments.Where(ap => ap.PatientId == patientId).ToListAsync();
+
+
+            return Ok(patientAppointments);
         }
 
 
